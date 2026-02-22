@@ -1,1 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exam Dashboard</title>
 
+<style>
+body {font-family:Segoe UI; background:#f0f4f8; padding:20px;}
+.container {max-width:1400px;margin:auto;display:flex;flex-direction:column;gap:20px;}
+
+.card {background:#1f3c88;color:white;padding:20px;border-radius:12px;}
+button {padding:8px 12px;border:none;border-radius:6px;cursor:pointer;}
+
+.progress-bar {height:10px;background:#ccc;border-radius:6px;overflow:hidden;}
+.progress-fill {height:100%;background:#27ae60;}
+
+.exam-card {background:#34495e;padding:15px;border-radius:10px;}
+.urgent {background:#e74c3c;}
+.soon {background:#f39c12;}
+.chill {background:#2ecc71;}
+
+#miniCalendar {display:grid;grid-template-columns:repeat(7,1fr);gap:5px;}
+#miniCalendar div {padding:8px;text-align:center;border-radius:4px;background:#ddd;}
+.exam-day {background:#f39c12;}
+.today {background:#27ae60;color:white;}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- DASHBOARD -->
+<div class="card">
+<h2>📊 Dashboard</h2>
+<p id="nextExam"></p>
+<p id="streak"></p>
+<p id="papersSolved"></p>
+</div>
+
+<!-- FORM -->
+<div class="card">
+<select id="subjectCode">
+<option value="9702">Physics</option>
+<option value="9701">Chemistry</option>
+<option value="9618">CS</option>
+<option value="9709">Math</option>
+<option value="8021">EGP</option>
+</select>
+
+<input id="component" placeholder="Component">
+
+<select id="session">
+<option value="m">M</option>
+<option value="s">S</option>
+<option value="w">W</option>
+</select>
+
+<select id="year"></select>
+
+<button onclick="openPastPaper()">Open</button>
+<button onclick="searchYoutube()">YouTube</button>
+<button onclick="markSolved()">Solved</button>
+</div>
+
+<!-- PROGRESS -->
+<div class="card">
+<h2>📈 Progress</h2>
+<div id="progress"></div>
+</div>
+
+<!-- RECOMMENDER -->
+<div class="card">
+<h2>🤖 Recommended Papers</h2>
+<div id="recommend"></div>
+</div>
+
+<!-- EXAMS -->
+<div class="card">
+<h2>📅 Exams</h2>
+<div id="examTracker"></div>
+</div>
+
+<!-- CALENDAR -->
+<div class="card">
+<h2>📅 Calendar</h2>
+<div id="miniCalendar"></div>
+</div>
+
+</div>
+
+<script>
+
+// YEARS
+const yearSelect=document.getElementById('year');
+for(let y=2026;y>=2000;y--){
+let opt=document.createElement('option');
+opt.value=y.toString().slice(-2);
+opt.textContent=y;
+yearSelect.appendChild(opt);
+}
+
+// EXAMS
+const exams=[
+{subject:'Physics',component:'P4',date:'2026-05-11'},
+{subject:'Math',component:'P3',date:'2026-05-15'},
+{subject:'Chemistry',component:'P5',date:'2026-05-18'}
+];
+
+// STORAGE
+let solved=JSON.parse(localStorage.getItem("solved")||"[]");
+
+// OPEN PAPER
+function openPastPaper(){
+const s=subjectCode.value;
+const c=component.value;
+const ses=session.value;
+const y=year.value;
+window.open(`https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/${s}_${ses}${y}_qp_${c}.pdf`);
+}
+
+// YOUTUBE
+function searchYoutube(){
+const s=subjectCode.value;
+const c=component.value;
+const ses=session.value;
+const y=year.value;
+window.open(`https://www.youtube.com/results?search_query=${s}/${c}/${ses}/${y}`);
+}
+
+// MARK SOLVED
+function markSolved(){
+const today=new Date().toISOString().split("T")[0];
+solved.push({date:today,subject:subjectCode.value});
+localStorage.setItem("solved",JSON.stringify(solved));
+updateDashboard();
+}
+
+// DASHBOARD
+function updateDashboard(){
+const today=new Date();
+
+// next exam
+let future=exams.filter(e=>new Date(e.date)>=today);
+future.sort((a,b)=>new Date(a.date)-new Date(b.date));
+let next=future[0];
+let days=Math.ceil((new Date(next.date)-today)/86400000);
+
+nextExam.textContent=`Next: ${next.subject} in ${days} days`;
+
+// streak
+let streak=0;
+let d=new Date();
+while(true){
+let ds=d.toISOString().split("T")[0];
+if(solved.some(x=>x.date===ds)){streak++;d.setDate(d.getDate()-1);}
+else break;
+}
+streakEl=`🔥 Streak: ${streak}`;
+document.getElementById("streak").textContent=streakEl;
+
+// today solved
+let todayStr=today.toISOString().split("T")[0];
+let count=solved.filter(x=>x.date===todayStr).length;
+papersSolved.textContent=`Solved today: ${count}`;
+}
+updateDashboard();
+
+// PROGRESS
+function renderProgress(){
+const subjects=["9702","9701","9618","9709","8021"];
+let html="";
+subjects.forEach(s=>{
+let total=solved.filter(x=>x.subject===s).length;
+let percent=Math.min(total*10,100);
+html+=`<p>${s}</p>
+<div class="progress-bar"><div class="progress-fill" style="width:${percent}%"></div></div>`;
+});
+progress.innerHTML=html;
+}
+renderProgress();
+
+// RECOMMENDER
+function recommendPapers(){
+let today=new Date();
+let future=exams.filter(e=>new Date(e.date)>=today);
+future.sort((a,b)=>new Date(a.date)-new Date(b.date));
+let next=future[0];
+recommend.innerHTML=`Solve recent ${next.subject} papers NOW`;
+}
+recommendPapers();
+
+// EXAMS UI
+function renderExams(){
+let today=new Date();
+examTracker.innerHTML=exams.map(e=>{
+let diff=Math.ceil((new Date(e.date)-today)/86400000);
+let cls=diff<=3?'urgent':diff<=7?'soon':'chill';
+return `<div class="exam-card ${cls}">${e.subject} ${e.component}<br>${diff} days</div>`;
+}).join('');
+}
+renderExams();
+
+// CALENDAR
+function renderCalendar(){
+let d=new Date();
+let month=d.getMonth();
+let year=d.getFullYear();
+let days=new Date(year,month+1,0).getDate();
+
+for(let i=1;i<=days;i++){
+let div=document.createElement('div');
+let date=`${year}-${String(month+1).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
+div.textContent=i;
+
+if(exams.some(e=>e.date===date)) div.classList.add('exam-day');
+if(i===d.getDate()) div.classList.add('today');
+
+div.onclick=()=>alert("Study this day!");
+miniCalendar.appendChild(div);
+}
+}
+renderCalendar();
+
+</script>
+</body>
+</html>
