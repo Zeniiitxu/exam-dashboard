@@ -4,80 +4,117 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Exam Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0f1117;
-    --surface: #1a1d2e;
-    --surface2: #232640;
-    --accent: #6c63ff;
-    --accent2: #00d4aa;
-    --danger: #ff4757;
-    --warn: #ffa502;
-    --success: #2ed573;
+    --bg: #0b0d14;
+    --surface: #13151f;
+    --surface2: #1c1f30;
+    --surface3: #252840;
+    --accent: #5b6af5;
+    --accent2: #00e5b4;
+    --mock: #f5a623;
+    --board: #e63c6e;
+    --success: #00e5b4;
+    --warn: #f5a623;
+    --danger: #e63c6e;
     --text: #e8eaf6;
-    --muted: #8888aa;
-    --radius: 14px;
+    --muted: #6b7099;
+    --mono: 'Space Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+    --radius: 12px;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-family: var(--sans);
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
-    padding: 20px;
+    padding: 24px 20px;
+    background-image:
+      radial-gradient(ellipse 60% 40% at 80% 0%, rgba(91,106,245,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 30% at 10% 90%, rgba(0,229,180,0.05) 0%, transparent 50%);
   }
 
-  .container {
-    max-width: 1200px;
-    margin: auto;
+  .container { max-width: 1200px; margin: auto; display: flex; flex-direction: column; gap: 16px; }
+
+  /* HEADER */
+  .header {
     display: flex;
-    flex-direction: column;
-    gap: 18px;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    margin-bottom: 4px;
   }
+  .header h1 {
+    font-family: var(--mono);
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--text);
+  }
+  .header h1 span { color: var(--accent); }
+  #dateDisplay { font-size: 0.78rem; color: var(--muted); font-family: var(--mono); }
 
-  h1 { font-size: 1.5rem; font-weight: 700; }
-  h2 { font-size: 1.1rem; font-weight: 600; margin-bottom: 12px; }
-
+  /* CARDS */
   .card {
     background: var(--surface);
-    padding: 20px;
+    padding: 18px;
     border-radius: var(--radius);
-    border: 1px solid rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+  h2 {
+    font-size: 0.7rem;
+    font-family: var(--mono);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 14px;
   }
 
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  /* GRID LAYOUTS */
+  .grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .grid-cal { display: grid; grid-template-columns: 1.2fr 1fr; gap: 14px; }
 
   /* STAT CARDS */
   .stat-card {
+    padding: 16px 18px;
+    border-radius: var(--radius);
     background: var(--surface2);
-    padding: 16px 20px;
-    border-radius: 10px;
-    border-left: 4px solid var(--accent);
+    border: 1px solid rgba(255,255,255,0.05);
+    position: relative;
+    overflow: hidden;
   }
-  .stat-card.danger { border-color: var(--danger); }
-  .stat-card.success { border-color: var(--success); }
-  .stat-card.warn { border-color: var(--warn); }
-  .stat-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
-  .stat-value { font-size: 1.6rem; font-weight: 700; margin-top: 4px; }
-  .stat-sub { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+  }
+  .stat-card.s-accent::before { background: var(--accent); }
+  .stat-card.s-warn::before   { background: var(--warn); }
+  .stat-card.s-success::before { background: var(--success); }
+  .stat-label { font-size: 0.68rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; font-family: var(--mono); }
+  .stat-value { font-size: 1.8rem; font-weight: 700; font-family: var(--mono); margin: 4px 0 2px; line-height: 1; }
+  .stat-sub   { font-size: 0.75rem; color: var(--muted); }
 
   /* FORM */
-  .form-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    align-items: center;
-  }
+  .form-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
   select, input {
     background: var(--surface2);
     color: var(--text);
-    border: 1px solid rgba(255,255,255,0.1);
-    padding: 9px 12px;
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 8px 11px;
     border-radius: 8px;
-    font-size: 0.9rem;
+    font-size: 0.82rem;
+    font-family: var(--sans);
     outline: none;
     transition: border 0.2s;
   }
@@ -85,299 +122,462 @@
   input::placeholder { color: var(--muted); }
 
   button {
-    padding: 9px 16px;
+    padding: 8px 14px;
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-weight: 600;
-    transition: opacity 0.2s, transform 0.1s;
+    font-family: var(--sans);
+    transition: opacity 0.15s, transform 0.1s;
   }
-  button:hover { opacity: 0.85; }
+  button:hover { opacity: 0.82; }
   button:active { transform: scale(0.97); }
-
-  .btn-primary { background: var(--accent); color: white; }
+  .btn-primary { background: var(--accent);  color: white; }
   .btn-success { background: var(--success); color: #000; }
   .btn-danger  { background: var(--danger);  color: white; }
-  .btn-yt      { background: #ff0000; color: white; }
-  .btn-outline {
-    background: transparent;
-    color: var(--text);
-    border: 1px solid rgba(255,255,255,0.2);
-  }
+  .btn-yt      { background: #ff2020;        color: white; }
+  .btn-outline { background: transparent; color: var(--text); border: 1px solid rgba(255,255,255,0.15); }
 
   /* PROGRESS */
-  .progress-item { margin-bottom: 14px; }
+  .progress-item { margin-bottom: 12px; }
   .progress-label {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.85rem;
-    margin-bottom: 5px;
+    display: flex; justify-content: space-between;
+    font-size: 0.8rem; margin-bottom: 5px;
   }
-  .progress-bar {
-    height: 8px;
-    background: rgba(255,255,255,0.08);
-    border-radius: 20px;
-    overflow: hidden;
-  }
+  .progress-label span:last-child { color: var(--muted); font-family: var(--mono); font-size: 0.72rem; }
+  .progress-bar { height: 6px; background: rgba(255,255,255,0.07); border-radius: 20px; overflow: hidden; }
   .progress-fill {
-    height: 100%;
-    border-radius: 20px;
+    height: 100%; border-radius: 20px;
     background: linear-gradient(90deg, var(--accent), var(--accent2));
-    transition: width 0.5s ease;
+    transition: width 0.6s cubic-bezier(.4,0,.2,1);
   }
 
   /* EXAM CARDS */
-  .exam-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px,1fr)); gap: 12px; }
+  .exam-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px,1fr)); gap: 10px; }
   .exam-card {
-    padding: 14px;
+    padding: 12px;
     border-radius: 10px;
-    font-size: 0.9rem;
+    font-size: 0.82rem;
+    border: 1px solid transparent;
+    position: relative;
   }
-  .exam-card .days { font-size: 1.5rem; font-weight: 800; }
-  .exam-card .days span { font-size: 0.75rem; font-weight: 400; opacity: 0.8; }
-  .exam-card.urgent { background: rgba(255,71,87,0.2); border: 1px solid var(--danger); }
-  .exam-card.soon   { background: rgba(255,165,2,0.2); border: 1px solid var(--warn); }
-  .exam-card.chill  { background: rgba(46,213,115,0.15); border: 1px solid var(--success); }
+  .exam-card .e-subject { font-weight: 700; margin-bottom: 2px; }
+  .exam-card .e-info { color: var(--muted); font-size: 0.73rem; margin-bottom: 6px; }
+  .exam-card .days { font-size: 1.4rem; font-weight: 800; font-family: var(--mono); line-height: 1; }
+  .exam-card .days-label { font-size: 0.68rem; color: rgba(255,255,255,0.6); font-family: var(--mono); }
+  .exam-card.urgent { background: rgba(230,60,110,0.15); border-color: rgba(230,60,110,0.4); }
+  .exam-card.soon   { background: rgba(245,166,35,0.12); border-color: rgba(245,166,35,0.35); }
+  .exam-card.chill  { background: rgba(0,229,180,0.08);  border-color: rgba(0,229,180,0.25); }
+  .exam-card.mock-exam { box-shadow: inset 3px 0 0 var(--mock); }
+  .exam-card.board-exam { box-shadow: inset 3px 0 0 var(--board); }
+  .exam-type-badge {
+    display: inline-block;
+    font-size: 0.6rem;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+  }
+  .badge-mock  { background: rgba(245,166,35,0.2); color: var(--mock); }
+  .badge-board { background: rgba(230,60,110,0.2); color: var(--board); }
 
   /* ADD EXAM FORM */
   .add-exam-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 14px;
-    padding-top: 14px;
-    border-top: 1px solid rgba(255,255,255,0.07);
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-top: 12px; padding-top: 12px;
+    border-top: 1px solid rgba(255,255,255,0.06);
   }
 
   /* CALENDAR */
-  .cal-header {
-    display: grid;
-    grid-template-columns: repeat(7,1fr);
-    gap: 4px;
-    margin-bottom: 4px;
+  .cal-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
   }
-  .cal-header div {
+  .cal-nav-title {
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .cal-nav button { padding: 4px 10px; font-size: 0.75rem; }
+  .cal-header-row {
+    display: grid; grid-template-columns: repeat(7,1fr);
+    gap: 3px; margin-bottom: 3px;
+  }
+  .cal-header-row div {
     text-align: center;
-    font-size: 0.7rem;
+    font-size: 0.62rem;
     color: var(--muted);
-    font-weight: 600;
-    text-transform: uppercase;
+    font-family: var(--mono);
+    padding: 3px 0;
   }
-  .cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 4px; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 3px; }
   .cal-day {
     aspect-ratio: 1;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    border-radius: 8px;
-    font-size: 0.8rem;
-    cursor: default;
+    border-radius: 7px;
+    font-size: 0.75rem;
+    font-family: var(--mono);
     background: var(--surface2);
-    transition: background 0.2s;
+    position: relative;
+    cursor: default;
+    transition: background 0.15s;
   }
   .cal-day.empty { background: transparent; }
   .cal-day.today { background: var(--accent); font-weight: 700; }
-  .cal-day.exam-day { background: var(--warn); color: #000; font-weight: 700; cursor: pointer; }
+  .cal-day.mock-day { background: rgba(245,166,35,0.25); color: var(--mock); font-weight: 700; cursor: pointer; }
+  .cal-day.board-day { background: rgba(230,60,110,0.25); color: var(--board); font-weight: 700; cursor: pointer; }
   .cal-day.solved-day { outline: 2px solid var(--success); outline-offset: -2px; }
+  .cal-day .dot {
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    position: absolute;
+    bottom: 4px;
+  }
+  .cal-day.multi::after {
+    content: '';
+    width: 6px; height: 2px;
+    background: rgba(255,255,255,0.5);
+    border-radius: 2px;
+    position: absolute;
+    bottom: 3px;
+  }
+
+  /* LEGEND */
+  .legend {
+    display: flex; gap: 14px; flex-wrap: wrap;
+    margin-top: 12px; padding-top: 10px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.73rem; color: var(--muted); }
+  .legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+
+  /* TOOLTIP POPUP */
+  #calTooltip {
+    position: fixed;
+    background: var(--surface3);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.78rem;
+    pointer-events: none;
+    z-index: 999;
+    display: none;
+    max-width: 220px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+  }
+  #calTooltip .tip-date { font-family: var(--mono); font-size: 0.68rem; color: var(--muted); margin-bottom: 6px; }
+  #calTooltip .tip-item { display: flex; align-items: center; gap: 6px; margin-bottom: 3px; }
+  #calTooltip .tip-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
 
   /* RECOMMEND */
-  .rec-card {
-    background: linear-gradient(135deg, var(--accent), #9c27b0);
-    padding: 16px;
+  .rec-cards { display: flex; flex-direction: column; gap: 10px; }
+  .rec-item {
+    padding: 13px 15px;
     border-radius: 10px;
-    font-size: 0.9rem;
-    line-height: 1.6;
+    font-size: 0.83rem;
+    line-height: 1.5;
   }
-
-  /* TOAST */
-  #toast {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    background: var(--surface2);
-    border: 1px solid var(--accent);
-    color: var(--text);
-    padding: 12px 20px;
-    border-radius: 10px;
-    font-size: 0.9rem;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s;
-    z-index: 999;
-  }
-  #toast.show { opacity: 1; }
+  .rec-item.rec-urgent { background: rgba(230,60,110,0.12); border: 1px solid rgba(230,60,110,0.3); }
+  .rec-item.rec-info   { background: rgba(91,106,245,0.1);  border: 1px solid rgba(91,106,245,0.25); }
+  .rec-item.rec-weak   { background: rgba(0,229,180,0.08);  border: 1px solid rgba(0,229,180,0.2); }
+  .rec-item strong { color: white; }
 
   /* LOG */
-  .log-list { max-height: 160px; overflow-y: auto; }
+  .log-list { max-height: 150px; overflow-y: auto; }
   .log-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 7px 10px;
-    border-radius: 7px;
-    font-size: 0.82rem;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 0.78rem;
     background: var(--surface2);
-    margin-bottom: 6px;
+    margin-bottom: 5px;
   }
-  .log-item button { padding: 3px 8px; font-size: 0.75rem; }
+  .log-item span:last-child { color: var(--muted); font-family: var(--mono); font-size: 0.7rem; }
 
-  /* SECTION TITLE */
-  .section-title {
-    font-size: 0.7rem;
+  /* TIMELINE */
+  .timeline { display: flex; flex-direction: column; gap: 0; }
+  .tl-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 0.8rem;
+  }
+  .tl-item:last-child { border-bottom: none; }
+  .tl-date {
+    font-family: var(--mono);
+    font-size: 0.68rem;
     color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 10px;
-    font-weight: 700;
+    min-width: 70px;
+    padding-top: 2px;
+  }
+  .tl-papers { display: flex; flex-wrap: wrap; gap: 5px; }
+  .tl-paper {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 600;
+  }
+  .tl-paper.mock-p { background: rgba(245,166,35,0.15); color: var(--mock); border: 1px solid rgba(245,166,35,0.3); }
+  .tl-paper.board-p { background: rgba(230,60,110,0.13); color: #ff8aab; border: 1px solid rgba(230,60,110,0.3); }
+  .tl-mark { font-size: 0.6rem; }
+
+  /* TOAST */
+  #toast {
+    position: fixed; bottom: 24px; right: 24px;
+    background: var(--surface3);
+    border: 1px solid rgba(91,106,245,0.4);
+    color: var(--text);
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-size: 0.82rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+    z-index: 9999;
+    font-family: var(--mono);
+  }
+  #toast.show { opacity: 1; }
+
+  .section-divider {
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+    opacity: 0.2;
+    margin: 2px 0;
   }
 
-  @media (max-width: 700px) {
-    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  @media (max-width: 780px) {
+    .grid-2, .grid-3, .grid-cal { grid-template-columns: 1fr; }
     .form-row { flex-direction: column; align-items: stretch; }
     select, input, button { width: 100%; }
   }
 </style>
 </head>
 <body>
-
 <div class="container">
 
   <!-- HEADER -->
-  <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-    <h1>📚 Exam Dashboard</h1>
-    <div id="dateDisplay" style="color:var(--muted); font-size:0.9rem;"></div>
+  <div class="header">
+    <h1>// <span>EXAM</span> DASHBOARD</h1>
+    <div id="dateDisplay"></div>
   </div>
 
   <!-- STAT CARDS -->
-  <div class="grid-3" id="statCards">
-    <div class="stat-card danger">
+  <div class="grid-3">
+    <div class="stat-card s-accent">
       <div class="stat-label">Next Exam</div>
       <div class="stat-value" id="nextExamVal">—</div>
       <div class="stat-sub" id="nextExamSub"></div>
     </div>
-    <div class="stat-card warn">
-      <div class="stat-label">🔥 Study Streak</div>
+    <div class="stat-card s-warn">
+      <div class="stat-label">🔥 Streak</div>
       <div class="stat-value" id="streakVal">0</div>
       <div class="stat-sub">days in a row</div>
     </div>
-    <div class="stat-card success">
-      <div class="stat-label">Papers Solved Today</div>
+    <div class="stat-card s-success">
+      <div class="stat-label">Papers Solved</div>
       <div class="stat-value" id="solvedTodayVal">0</div>
-      <div class="stat-sub" id="totalSolvedSub"></div>
+      <div class="stat-sub" id="totalSolvedSub">today · 0 total</div>
     </div>
   </div>
 
   <!-- PAPER FINDER -->
   <div class="card">
-    <h2>🔍 Past Paper Finder</h2>
+    <h2>// past paper finder</h2>
     <div class="form-row">
       <select id="subjectCode">
-        <option value="9702">9702 Physics</option>
-        <option value="9701">9701 Chemistry</option>
-        <option value="9618">9618 Computer Science</option>
-        <option value="9709">9709 Mathematics</option>
-        <option value="8021">8021 EGP</option>
+        <option value="9702">9702 · Physics</option>
+        <option value="9701">9701 · Chemistry</option>
+        <option value="9618">9618 · Computer Science</option>
+        <option value="9709">9709 · Mathematics</option>
+        <option value="8021">8021 · EGP</option>
       </select>
-      <input id="component" placeholder="Component (e.g. 42)" style="width:140px;">
+      <input id="component" placeholder="Component e.g. 42" style="width:130px;">
+      <select id="paperType">
+        <option value="qp">qp</option>
+        <option value="ms">ms</option>
+        <option value="sf">sf</option>
+        <option value="in">in</option>
+      </select>
       <select id="session">
-        <option value="m">May/June (s)</option>
-        <option value="s">Feb/Mar (m)</option>
-        <option value="w">Oct/Nov (w)</option>
+        <option value="m">M</option>
+        <option value="s">S</option>
+        <option value="w">W</option>
       </select>
-      <select id="yearSelect" style="width:100px;"></select>
+      <select id="yearSelect" style="width:90px;">
+        <option value="26">2026</option>
+        <option value="25">2025</option>
+        <option value="24">2024</option>
+        <option value="23">2023</option>
+        <option value="22">2022</option>
+        <option value="21">2021</option>
+        <option value="20">2020</option>
+        <option value="19">2019</option>
+        <option value="18">2018</option>
+        <option value="17">2017</option>
+        <option value="16">2016</option>
+        <option value="15">2015</option>
+        <option value="14">2014</option>
+        <option value="13">2013</option>
+        <option value="12">2012</option>
+        <option value="11">2011</option>
+        <option value="10">2010</option>
+        <option value="09">2009</option>
+        <option value="08">2008</option>
+        <option value="07">2007</option>
+        <option value="06">2006</option>
+        <option value="05">2005</option>
+        <option value="04">2004</option>
+        <option value="03">2003</option>
+        <option value="02">2002</option>
+        <option value="01">2001</option>
+        <option value="00">2000</option>
+      </select>
       <button class="btn-primary" onclick="openPastPaper()">📄 Open</button>
       <button class="btn-yt" onclick="searchYoutube()">▶ YouTube</button>
       <button class="btn-success" onclick="markSolved()">✅ Mark Solved</button>
     </div>
   </div>
 
+  <!-- PROGRESS + RECOMMEND -->
   <div class="grid-2">
-
-    <!-- PROGRESS -->
     <div class="card">
-      <h2>📈 Progress</h2>
+      <h2>// progress</h2>
       <div id="progressContainer"></div>
     </div>
-
-    <!-- RECOMMENDER -->
     <div class="card">
-      <h2>🤖 What to Solve Now</h2>
-      <div id="recommend"></div>
+      <h2>// recommended focus</h2>
+      <div class="rec-cards" id="recommend"></div>
     </div>
-
   </div>
 
-  <div class="grid-2">
-
-    <!-- EXAMS -->
-    <div class="card">
-      <h2>📅 Upcoming Exams</h2>
-      <div class="exam-grid" id="examTracker"></div>
-      <div class="add-exam-row">
-        <input id="newSubject" placeholder="Subject" style="width:120px;">
-        <input id="newComp" placeholder="Paper (e.g. P4)" style="width:90px;">
-        <input id="newDate" type="date" style="width:150px;">
-        <button class="btn-outline" onclick="addExam()">+ Add</button>
-      </div>
-    </div>
+  <!-- CALENDAR + TIMELINE -->
+  <div class="grid-cal">
 
     <!-- CALENDAR -->
     <div class="card">
-      <h2 id="calTitle">📅 Calendar</h2>
-      <div class="cal-header" id="calHeader"></div>
+      <h2>// calendar</h2>
+      <div class="cal-nav">
+        <button class="btn-outline" onclick="prevMonth()">‹</button>
+        <div class="cal-nav-title" id="calTitle"></div>
+        <button class="btn-outline" onclick="nextMonth()">›</button>
+      </div>
+      <div class="cal-header-row" id="calHeader"></div>
       <div class="cal-grid" id="calGrid"></div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(245,166,35,0.5)"></div>Mock Exam</div>
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(230,60,110,0.5)"></div>Board Exam</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--accent)"></div>Today</div>
+        <div class="legend-item"><div class="legend-dot" style="outline:2px solid var(--success); outline-offset:-1px; background:transparent"></div>Solved</div>
+      </div>
+    </div>
+
+    <!-- TIMELINE -->
+    <div class="card" style="overflow:hidden;">
+      <h2>// exam timeline</h2>
+      <div style="max-height: 420px; overflow-y: auto;">
+        <div class="timeline" id="timeline"></div>
+      </div>
     </div>
 
   </div>
 
-  <!-- SOLVE LOG -->
+  <!-- UPCOMING EXAMS -->
   <div class="card">
-    <h2>📋 Solve Log</h2>
+    <h2>// upcoming exams</h2>
+    <div class="exam-grid" id="examTracker"></div>
+    <div class="add-exam-row">
+      <input id="newSubject" placeholder="Subject" style="width:120px;">
+      <input id="newComp" placeholder="Paper e.g. P4" style="width:90px;">
+      <input id="newDate" type="date" style="width:150px;">
+      <select id="newType">
+        <option value="board">Board</option>
+        <option value="mock">Mock</option>
+      </select>
+      <button class="btn-outline" onclick="addExam()">+ Add Exam</button>
+    </div>
+  </div>
+
+  <!-- LOG -->
+  <div class="card">
+    <h2>// solve log</h2>
     <div class="log-list" id="logList"></div>
-    <p id="logEmpty" style="color:var(--muted); font-size:0.85rem;">No papers solved yet. Start grinding! 💪</p>
+    <p id="logEmpty" style="color:var(--muted);font-size:0.8rem;font-family:var(--mono);">// no papers solved yet. start grinding!</p>
   </div>
 
 </div>
 
+<div id="calTooltip"></div>
 <div id="toast"></div>
 
 <script>
-// ─── DATA ─────────────────────────────────────────────────────────────────────
-
+// ─── SUBJECTS ─────────────────────────────────────────────────────────────────
 const SUBJECTS = {
-  "9702": "Physics",
-  "9701": "Chemistry",
-  "9618": "CS",
-  "9709": "Math",
-  "8021": "EGP"
+  "9702":"Physics","9701":"Chemistry","9618":"CS","9709":"Math","8021":"EGP"
 };
 
-let exams = JSON.parse(localStorage.getItem("exams_v2") || "null") || [
-  {id: 1, subject:"Physics",    component:"P4", date:"2026-05-11"},
-  {id: 2, subject:"Math",       component:"P3", date:"2026-05-15"},
-  {id: 3, subject:"Chemistry",  component:"P5", date:"2026-05-18"}
+// ─── PRESET EXAMS ─────────────────────────────────────────────────────────────
+const PRESET_EXAMS = [
+  // MOCK EXAMS
+  {id:1,  subject:"Physics",          component:"P4, P5", date:"2026-03-19", type:"mock"},
+  {id:2,  subject:"EGP",              component:"P1, P2", date:"2026-03-23", type:"mock"},
+  {id:3,  subject:"Chemistry",        component:"P4, P5", date:"2026-03-26", type:"mock"},
+  {id:4,  subject:"Computer Science", component:"P4",     date:"2026-03-27", type:"mock"},
+  {id:5,  subject:"Computer Science", component:"P3",     date:"2026-03-29", type:"mock"},
+  {id:6,  subject:"Mathematics",      component:"P3, P4", date:"2026-03-31", type:"mock"},
+  // BOARD EXAMS
+  {id:7,  subject:"EGP",              component:"P1",     date:"2026-04-27", type:"board"},
+  {id:8,  subject:"EGP",              component:"P2",     date:"2026-05-04", type:"board"},
+  {id:9,  subject:"Mathematics",      component:"P4",     date:"2026-05-06", type:"board"},
+  {id:10, subject:"Chemistry",        component:"P4",     date:"2026-05-06", type:"board"},
+  {id:11, subject:"Physics",          component:"P4",     date:"2026-05-11", type:"board"},
+  {id:12, subject:"Mathematics",      component:"P3",     date:"2026-05-15", type:"board"},
+  {id:13, subject:"Chemistry",        component:"P5",     date:"2026-05-18", type:"board"},
+  {id:14, subject:"Computer Science", component:"P3",     date:"2026-05-19", type:"board"},
+  {id:15, subject:"Physics",          component:"P5",     date:"2026-05-20", type:"board"},
+  {id:16, subject:"Computer Science", component:"P4",     date:"2026-05-21", type:"board"},
 ];
 
-let solved = JSON.parse(localStorage.getItem("solved_v2") || "[]");
+// Safe storage (localStorage blocked in Claude preview)
+function storageGet(key, fallback) {
+  try { return JSON.parse(localStorage.getItem(key) || "null") || fallback; }
+  catch(e) { return fallback; }
+}
+function storageSet(key, val) {
+  try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {}
+}
+
+let exams = storageGet("exams_v3", PRESET_EXAMS);
+let solved = storageGet("solved_v2", []);
+
+// Calendar state
+let calYear  = new Date().getFullYear();
+let calMonth = new Date().getMonth();
 
 function save() {
-  localStorage.setItem("exams_v2", JSON.stringify(exams));
-  localStorage.setItem("solved_v2", JSON.stringify(solved));
+  storageSet("exams_v3", exams);
+  storageSet("solved_v2", solved);
 }
 
-// ─── YEAR SELECT ──────────────────────────────────────────────────────────────
-
-const yearSel = document.getElementById("yearSelect");
-for (let y = 2026; y >= 2000; y--) {
-  const o = document.createElement("option");
-  o.value = String(y).slice(-2);
-  o.textContent = y;
-  yearSel.appendChild(o);
-}
+// Year select is hardcoded in HTML
 
 // ─── TOAST ────────────────────────────────────────────────────────────────────
-
 function toast(msg) {
   const t = document.getElementById("toast");
   t.textContent = msg;
@@ -386,241 +586,289 @@ function toast(msg) {
 }
 
 // ─── PAPER ACTIONS ────────────────────────────────────────────────────────────
-
 function getPaperInfo() {
-  const s   = document.getElementById("subjectCode").value;
-  const c   = document.getElementById("component").value.trim() || "42";
-  const ses = document.getElementById("session").value;
-  const y   = document.getElementById("yearSelect").value;
-  return {s, c, ses, y};
+  return {
+    s:   document.getElementById("subjectCode").value,
+    c:   document.getElementById("component").value.trim() || "42",
+    pt:  document.getElementById("paperType").value,
+    ses: document.getElementById("session").value,
+    y:   document.getElementById("yearSelect").value
+  };
 }
-
 function openPastPaper() {
-  const {s, c, ses, y} = getPaperInfo();
-  const sesMap = { m: "s", s: "m", w: "w" };
-  const paperSes = sesMap[ses];
-  window.open(`https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/${s}_${paperSes}${y}_qp_${c}.pdf`);
+  const {s,c,pt,ses,y} = getPaperInfo();
+  window.open(`https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/${s}_${ses}${y}_${pt}_${c}.pdf`);
 }
-
 function searchYoutube() {
-  const {s, c, ses, y} = getPaperInfo();
-  const subName = SUBJECTS[s] || s;
-  window.open(`https://www.youtube.com/results?search_query=CAIE+${subName}+${c}+${ses}${y}`);
+  const {s,c,ses,y} = getPaperInfo();
+  window.open(`https://www.youtube.com/results?search_query=${s}/${c}/${ses}/${y}`);
 }
-
 function markSolved() {
-  const {s, c, ses, y} = getPaperInfo();
+  const {s,c,ses,y} = getPaperInfo();
   const today = new Date().toISOString().split("T")[0];
-  solved.push({ date: today, subject: s, component: c, session: ses, year: y, id: Date.now() });
-  save();
-  renderAll();
-  toast(`✅ Marked: ${SUBJECTS[s]} ${c} ${ses}${y}`);
+  solved.push({date:today,subject:s,component:c,session:ses,year:y,id:Date.now()});
+  save(); renderAll();
+  toast(`✅ ${SUBJECTS[s]} ${c} ${ses}${y} marked solved`);
 }
 
-// ─── ADD EXAM ─────────────────────────────────────────────────────────────────
-
+// ─── ADD/REMOVE EXAM ──────────────────────────────────────────────────────────
 function addExam() {
   const sub  = document.getElementById("newSubject").value.trim();
   const comp = document.getElementById("newComp").value.trim();
   const date = document.getElementById("newDate").value;
-  if (!sub || !comp || !date) { toast("Fill in all fields!"); return; }
-  exams.push({ id: Date.now(), subject: sub, component: comp, date });
+  const type = document.getElementById("newType").value;
+  if (!sub||!comp||!date) { toast("Fill all fields!"); return; }
+  exams.push({id:Date.now(),subject:sub,component:comp,date,type});
   save();
-  renderExams();
-  renderCalendar();
-  document.getElementById("newSubject").value = "";
-  document.getElementById("newComp").value = "";
-  document.getElementById("newDate").value = "";
+  document.getElementById("newSubject").value="";
+  document.getElementById("newComp").value="";
+  document.getElementById("newDate").value="";
+  renderAll();
   toast(`📅 Added: ${sub} ${comp}`);
 }
-
 function removeExam(id) {
-  exams = exams.filter(e => e.id !== id);
-  save();
-  renderExams();
-  renderCalendar();
-  renderStats();
-  renderRecommend();
+  exams = exams.filter(e=>e.id!==id);
+  save(); renderAll();
   toast("Exam removed");
 }
 
 // ─── STATS ────────────────────────────────────────────────────────────────────
-
 function renderStats() {
   const today = new Date();
   const todayStr = today.toISOString().split("T")[0];
-
-  // date
   document.getElementById("dateDisplay").textContent =
-    today.toLocaleDateString("en-GB", {weekday:"long", year:"numeric", month:"long", day:"numeric"});
+    today.toLocaleDateString("en-GB",{weekday:"long",year:"numeric",month:"long",day:"numeric"});
 
-  // next exam
   const future = exams
-    .filter(e => new Date(e.date + "T00:00:00") >= today)
-    .sort((a, b) => new Date(a.date) - new Date(b.date));
+    .filter(e=>new Date(e.date+"T12:00:00")>=today)
+    .sort((a,b)=>new Date(a.date)-new Date(b.date));
 
   if (future.length) {
     const next = future[0];
-    const diff = Math.ceil((new Date(next.date + "T00:00:00") - today) / 86400000);
-    document.getElementById("nextExamVal").textContent = `${diff}d`;
-    document.getElementById("nextExamSub").textContent = `${next.subject} ${next.component} · ${next.date}`;
+    const diff = Math.ceil((new Date(next.date+"T12:00:00")-today)/86400000);
+    document.getElementById("nextExamVal").textContent = diff===0?"TODAY":`${diff}d`;
+    document.getElementById("nextExamSub").textContent = `${next.subject} ${next.component} · ${fmtDate(next.date)}`;
   } else {
-    document.getElementById("nextExamVal").textContent = "—";
-    document.getElementById("nextExamSub").textContent = "No exams scheduled";
+    document.getElementById("nextExamVal").textContent="—";
+    document.getElementById("nextExamSub").textContent="No upcoming exams";
   }
 
-  // streak
-  let streak = 0;
-  let d = new Date(today);
-  while (true) {
-    const ds = d.toISOString().split("T")[0];
-    if (solved.some(x => x.date === ds)) { streak++; d.setDate(d.getDate() - 1); }
+  let streak=0, d=new Date();
+  while(true) {
+    const ds=d.toISOString().split("T")[0];
+    if(solved.some(x=>x.date===ds)){streak++;d.setDate(d.getDate()-1);}
     else break;
   }
-  document.getElementById("streakVal").textContent = streak;
+  document.getElementById("streakVal").textContent=streak;
 
-  // today
-  const todayCount = solved.filter(x => x.date === todayStr).length;
-  document.getElementById("solvedTodayVal").textContent = todayCount;
-  document.getElementById("totalSolvedSub").textContent = `${solved.length} total solved`;
+  const todayCount=solved.filter(x=>x.date===todayStr).length;
+  document.getElementById("solvedTodayVal").textContent=todayCount;
+  document.getElementById("totalSolvedSub").textContent=`today · ${solved.length} total`;
+}
+
+function fmtDate(d) {
+  return new Date(d+"T12:00:00").toLocaleDateString("en-GB",{day:"numeric",month:"short"});
 }
 
 // ─── PROGRESS ─────────────────────────────────────────────────────────────────
-
 function renderProgress() {
-  const container = document.getElementById("progressContainer");
-  container.innerHTML = Object.entries(SUBJECTS).map(([code, name]) => {
-    const count = solved.filter(x => x.subject === code).length;
-    const pct   = Math.min(count * 8, 100);
-    return `
-      <div class="progress-item">
-        <div class="progress-label">
-          <span>${name}</span>
-          <span style="color:var(--muted)">${count} paper${count !== 1 ? "s" : ""}</span>
-        </div>
-        <div class="progress-bar">
-          <div class="progress-fill" style="width:${pct}%"></div>
-        </div>
+  document.getElementById("progressContainer").innerHTML =
+    Object.entries(SUBJECTS).map(([code,name])=>{
+      const count=solved.filter(x=>x.subject===code).length;
+      const pct=Math.min(count*8,100);
+      return `<div class="progress-item">
+        <div class="progress-label"><span>${name}</span><span>${count} paper${count!==1?"s":""}</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
       </div>`;
-  }).join("");
+    }).join("");
 }
 
 // ─── RECOMMEND ────────────────────────────────────────────────────────────────
-
 function renderRecommend() {
-  const today = new Date();
-  const future = exams
-    .filter(e => new Date(e.date + "T00:00:00") >= today)
-    .sort((a, b) => new Date(a.date) - new Date(b.date));
+  const today=new Date();
+  const future=exams.filter(e=>new Date(e.date+"T12:00:00")>=today)
+    .sort((a,b)=>new Date(a.date)-new Date(b.date));
+  const el=document.getElementById("recommend");
+  if(!future.length){el.innerHTML=`<div class="rec-item rec-info">🎉 All exams done!</div>`;return;}
 
-  const el = document.getElementById("recommend");
-  if (!future.length) { el.innerHTML = `<div class="rec-card">🎉 No upcoming exams!</div>`; return; }
+  const next=future[0];
+  const diff=Math.ceil((new Date(next.date+"T12:00:00")-today)/86400000);
 
-  const next = future[0];
-  const diff = Math.ceil((new Date(next.date + "T00:00:00") - today) / 86400000);
+  // Weakest subject
+  const counts={};
+  Object.keys(SUBJECTS).forEach(k=>counts[k]=solved.filter(x=>x.subject===k).length);
+  const [weakCode,weakCount]=Object.entries(counts).sort((a,b)=>a[1]-b[1])[0];
 
-  // find least-practiced subject
-  const counts = {};
-  Object.keys(SUBJECTS).forEach(k => counts[k] = solved.filter(x => x.subject === k).length);
-  const weakCode = Object.entries(counts).sort((a,b) => a[1]-b[1])[0][0];
-  const weakName = SUBJECTS[weakCode];
+  // Mock vs board context
+  const nextMock=future.find(e=>e.type==="mock");
+  const nextBoard=future.find(e=>e.type==="board");
 
-  el.innerHTML = `
-    <div class="rec-card" style="margin-bottom:10px;">
-      🚨 <strong>${next.subject} ${next.component}</strong> in <strong>${diff} days</strong><br>
-      Solve the last 3 past papers. Focus on timing.
-    </div>
-    <div class="rec-card" style="background: linear-gradient(135deg, #1a6b4a, #0d9488);">
-      📉 Weakest subject: <strong>${weakName}</strong><br>
-      Only ${counts[weakCode]} paper${counts[weakCode] !== 1 ? "s" : ""} solved. Grind this next!
+  let html="";
+  html+=`<div class="rec-item rec-urgent">
+    🚨 <strong>${next.subject} ${next.component}</strong> in <strong>${diff}d</strong> — ${next.type==="mock"?"Mock":"Board"} Exam<br>
+    <span style="color:var(--muted);font-size:0.77rem">Focus on timed practice. Check mark schemes carefully.</span>
+  </div>`;
+
+  if(nextMock&&nextMock!==next) {
+    const d2=Math.ceil((new Date(nextMock.date+"T12:00:00")-today)/86400000);
+    html+=`<div class="rec-item rec-info">
+      📝 Next mock: <strong>${nextMock.subject} ${nextMock.component}</strong> in ${d2}d
     </div>`;
+  }
+
+  html+=`<div class="rec-item rec-weak">
+    📉 Weakest: <strong>${SUBJECTS[weakCode]}</strong> — ${weakCount} paper${weakCount!==1?"s":""} solved. Prioritise this!
+  </div>`;
+
+  el.innerHTML=html;
 }
 
 // ─── EXAMS ────────────────────────────────────────────────────────────────────
-
 function renderExams() {
-  const today = new Date();
-  const sorted = [...exams].sort((a, b) => new Date(a.date) - new Date(b.date));
-  document.getElementById("examTracker").innerHTML = sorted.map(e => {
-    const diff = Math.ceil((new Date(e.date + "T00:00:00") - today) / 86400000);
-    const cls  = diff <= 3 ? "urgent" : diff <= 14 ? "soon" : "chill";
-    const label = diff < 0 ? "Done" : diff === 0 ? "TODAY" : `${diff}`;
-    return `
-      <div class="exam-card ${cls}">
-        <div style="font-weight:700">${e.subject}</div>
-        <div style="color:var(--muted); font-size:0.8rem">${e.component} · ${e.date}</div>
-        <div class="days">${label} <span>${diff >= 0 ? "days" : ""}</span></div>
-        <button class="btn-danger" style="margin-top:8px; font-size:0.75rem; padding:4px 8px;"
-          onclick="removeExam(${e.id})">Remove</button>
-      </div>`;
+  const today=new Date();
+  const sorted=[...exams].sort((a,b)=>new Date(a.date)-new Date(b.date));
+  const upcoming=sorted.filter(e=>new Date(e.date+"T12:00:00")>=today).slice(0,12);
+
+  document.getElementById("examTracker").innerHTML=upcoming.map(e=>{
+    const diff=Math.ceil((new Date(e.date+"T12:00:00")-today)/86400000);
+    const urgCls=diff<=3?"urgent":diff<=14?"soon":"chill";
+    const typeCls=e.type==="mock"?"mock-exam":"board-exam";
+    const label=diff===0?"TODAY":`${diff}`;
+    return `<div class="exam-card ${urgCls} ${typeCls}">
+      <div class="exam-type-badge badge-${e.type}">${e.type}</div>
+      <div class="e-subject">${e.subject}</div>
+      <div class="e-info">${e.component} · ${fmtDate(e.date)}</div>
+      <div class="days">${label} <span class="days-label">${diff>0?"days":""}</span></div>
+      <button class="btn-danger" style="margin-top:8px;font-size:0.7rem;padding:3px 8px;" onclick="removeExam(${e.id})">✕</button>
+    </div>`;
+  }).join("");
+}
+
+// ─── TIMELINE ─────────────────────────────────────────────────────────────────
+function renderTimeline() {
+  const today=new Date();
+  const sorted=[...exams].sort((a,b)=>new Date(a.date)-new Date(b.date));
+
+  // Group by date
+  const byDate={};
+  sorted.forEach(e=>{
+    if(!byDate[e.date]) byDate[e.date]=[];
+    byDate[e.date].push(e);
+  });
+
+  document.getElementById("timeline").innerHTML=Object.entries(byDate).map(([date,items])=>{
+    const isPast=new Date(date+"T12:00:00")<today;
+    const papers=items.map(e=>
+      `<span class="tl-paper ${e.type==="mock"?"mock-p":"board-p"}">
+        ${e.subject} ${e.component}
+      </span>`
+    ).join("");
+    return `<div class="tl-item" style="opacity:${isPast?0.4:1}">
+      <div class="tl-date">${fmtDate(date)}</div>
+      <div class="tl-papers">${papers}</div>
+    </div>`;
   }).join("");
 }
 
 // ─── CALENDAR ─────────────────────────────────────────────────────────────────
+function prevMonth() { calMonth--; if(calMonth<0){calMonth=11;calYear--;} renderCalendar(); }
+function nextMonth() { calMonth++; if(calMonth>11){calMonth=0;calYear++;} renderCalendar(); }
 
 function renderCalendar() {
-  const today = new Date();
-  const year  = today.getFullYear();
-  const month = today.getMonth();
+  const today=new Date();
+  const monthName=new Date(calYear,calMonth,1).toLocaleDateString("en-GB",{month:"long",year:"numeric"});
+  document.getElementById("calTitle").textContent=monthName;
 
-  document.getElementById("calTitle").textContent =
-    "📅 " + today.toLocaleDateString("en-GB", {month:"long", year:"numeric"});
+  document.getElementById("calHeader").innerHTML=
+    ["S","M","T","W","T","F","S"].map(d=>`<div>${d}</div>`).join("");
 
-  const days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-  document.getElementById("calHeader").innerHTML =
-    days.map(d => `<div>${d}</div>`).join("");
+  const firstDay=new Date(calYear,calMonth,1).getDay();
+  const totalDays=new Date(calYear,calMonth+1,0).getDate();
+  const solvedDates=new Set(solved.map(s=>s.date));
 
-  const firstDay  = new Date(year, month, 1).getDay();
-  const totalDays = new Date(year, month + 1, 0).getDate();
-  const examDates = new Set(exams.map(e => e.date));
-  const solvedDates = new Set(solved.map(s => s.date));
+  // Build exam lookup by date
+  const examByDate={};
+  exams.forEach(e=>{
+    if(!examByDate[e.date]) examByDate[e.date]=[];
+    examByDate[e.date].push(e);
+  });
 
-  let html = "";
-  for (let i = 0; i < firstDay; i++) html += `<div class="cal-day empty"></div>`;
-  for (let i = 1; i <= totalDays; i++) {
-    const dateStr = `${year}-${String(month+1).padStart(2,"0")}-${String(i).padStart(2,"0")}`;
-    const isToday = i === today.getDate();
-    const isExam  = examDates.has(dateStr);
-    const isSolved = solvedDates.has(dateStr);
+  let html="";
+  for(let i=0;i<firstDay;i++) html+=`<div class="cal-day empty"></div>`;
+  for(let i=1;i<=totalDays;i++) {
+    const dateStr=`${calYear}-${String(calMonth+1).padStart(2,"0")}-${String(i).padStart(2,"0")}`;
+    const isToday=i===today.getDate()&&calMonth===today.getMonth()&&calYear===today.getFullYear();
+    const dayExams=examByDate[dateStr]||[];
+    const hasMock=dayExams.some(e=>e.type==="mock");
+    const hasBoard=dayExams.some(e=>e.type==="board");
+    const isSolved=solvedDates.has(dateStr);
+    const multiExam=dayExams.length>1;
 
-    let cls = "cal-day";
-    if (isToday) cls += " today";
-    else if (isExam) cls += " exam-day";
-    if (isSolved && !isToday) cls += " solved-day";
+    let cls="cal-day";
+    if(isToday) cls+=" today";
+    else if(hasMock&&hasBoard) cls+=" board-day"; // board takes priority visually
+    else if(hasBoard) cls+=" board-day";
+    else if(hasMock) cls+=" mock-day";
+    if(isSolved&&!isToday) cls+=" solved-day";
+    if(multiExam) cls+=" multi";
 
-    const examInfo = isExam ? exams.find(e => e.date === dateStr) : null;
-    const title = examInfo ? `title="${examInfo.subject} ${examInfo.component}"` : "";
-    html += `<div class="${cls}" ${title}>${i}</div>`;
+    const tips=dayExams.map(e=>`${e.subject} ${e.component} (${e.type})`).join(", ");
+    html+=`<div class="${cls}" ${dayExams.length?`data-tip="${dateStr}|${tips}"`:""}
+      ${dayExams.length?'onmouseenter="showTip(event,this)" onmouseleave="hideTip()"':''}>${i}</div>`;
   }
-  document.getElementById("calGrid").innerHTML = html;
+  document.getElementById("calGrid").innerHTML=html;
 }
 
-// ─── LOG ──────────────────────────────────────────────────────────────────────
+// ─── TOOLTIP ──────────────────────────────────────────────────────────────────
+function showTip(e,el) {
+  const [date,...rest]=el.dataset.tip.split("|");
+  const items=rest.join("").split(", ");
+  const examsByDate=exams.filter(x=>x.date===date);
+  let inner=`<div class="tip-date">${fmtDate(date)}</div>`;
+  examsByDate.forEach(ex=>{
+    inner+=`<div class="tip-item">
+      <div class="tip-dot" style="background:${ex.type==="mock"?"var(--mock)":"var(--board)"}"></div>
+      <span>${ex.subject} ${ex.component} <span style="opacity:0.5;font-size:0.65rem">${ex.type}</span></span>
+    </div>`;
+  });
+  const tip=document.getElementById("calTooltip");
+  tip.innerHTML=inner;
+  tip.style.display="block";
+  tip.style.left=(e.clientX+12)+"px";
+  tip.style.top=(e.clientY-10)+"px";
+}
+function hideTip() { document.getElementById("calTooltip").style.display="none"; }
 
+// ─── LOG ──────────────────────────────────────────────────────────────────────
 function renderLog() {
-  const list = document.getElementById("logList");
-  const empty = document.getElementById("logEmpty");
-  if (!solved.length) { list.innerHTML = ""; empty.style.display = "block"; return; }
-  empty.style.display = "none";
-  list.innerHTML = [...solved].reverse().slice(0, 20).map(s => `
-    <div class="log-item">
-      <span>${SUBJECTS[s.subject] || s.subject} · Paper ${s.component} · ${s.session}${s.year}</span>
-      <span style="color:var(--muted); font-size:0.78rem">${s.date}</span>
+  const list=document.getElementById("logList");
+  const empty=document.getElementById("logEmpty");
+  if(!solved.length){list.innerHTML="";empty.style.display="block";return;}
+  empty.style.display="none";
+  list.innerHTML=[...solved].reverse().slice(0,20).map(s=>
+    `<div class="log-item">
+      <span>${SUBJECTS[s.subject]||s.subject} · ${s.component} · ${s.session}${s.year}</span>
+      <span>${s.date}</span>
     </div>`).join("");
 }
 
 // ─── RENDER ALL ───────────────────────────────────────────────────────────────
-
 function renderAll() {
   renderStats();
   renderProgress();
   renderRecommend();
   renderExams();
   renderCalendar();
+  renderTimeline();
   renderLog();
 }
 
 renderAll();
+
+// Navigate calendar to current month on load
+calMonth=new Date().getMonth();
+calYear=new Date().getFullYear();
+renderCalendar();
 </script>
 </body>
 </html>
