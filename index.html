@@ -838,12 +838,20 @@ function renderExams() {
   const upcoming=[...exams]
     .sort((a,b)=>new Date(a.date)-new Date(b.date))
     .filter(e=>new Date(e.date+"T12:00:00")>=today);
-  document.getElementById("examTracker").innerHTML=upcoming.map(e=>{
+  const examHTML = upcoming.map(e=>{
     const diff=Math.ceil((new Date(e.date+"T12:00:00")-today)/86400000);
     const urgCls=diff<=3?"urgent":diff<=14?"soon":"chill";
     const typeCls=e.type==="mock"?"mock-exam":"board-exam";
     const label=diff===0?"TODAY":""+diff;
     return "<div class=\"exam-card "+urgCls+" "+typeCls+"\"><div class=\"exam-type-badge badge-"+e.type+"\">"+e.type+"</div><div class=\"e-subject\">"+e.subject+"</div><div class=\"e-info\">"+e.component+" · "+fmtDate(e.date)+"</div><div class=\"days\">"+label+" <span class=\"days-label\">"+(diff>0?"days":"")+"</span></div><button class=\"btn-danger\" style=\"margin-top:10px;font-size:0.7rem;padding:3px 8px;\" onclick=\"removeExam("+e.id+")\">✕</button></div>";
+  }).join("");
+  document.getElementById("examTracker").innerHTML = examHTML;
+  document.getElementById("examTrackerOverview").innerHTML = upcoming.slice(0,6).map(e=>{
+    const diff=Math.ceil((new Date(e.date+"T12:00:00")-new Date())/86400000);
+    const urgCls=diff<=3?"urgent":diff<=14?"soon":"chill";
+    const typeCls=e.type==="mock"?"mock-exam":"board-exam";
+    const label=diff===0?"TODAY":""+diff;
+    return "<div class=\"exam-card "+urgCls+" "+typeCls+"\"><div class=\"exam-type-badge badge-"+e.type+"\">"+e.type+"</div><div class=\"e-subject\">"+e.subject+"</div><div class=\"e-info\">"+e.component+" · "+fmtDate(e.date)+"</div><div class=\"days\">"+label+" <span class=\"days-label\">"+(diff>0?"days":"")+"</span></div></div>";
   }).join("");
 }
 
